@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "none",
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "target" : "es6",
+        "outDir": "./compiled"
+    },
+    "include": [
+        "../Tampermonkey.d.ts/*",
+        "**/*",
+    ],
+    "exclude": [
+        "./compiled/**/*"
+    ]
+}
