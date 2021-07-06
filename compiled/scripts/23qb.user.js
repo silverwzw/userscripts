@@ -97,6 +97,9 @@
         Log("Warning: This page does not seem like a book page.");
     }
 
+    let interval_handle;
+    const page_title = document.title;
+
     try {
         // 获得状态机状态
         let ad_phase = GM_getValue(GlobalVar("autodownload"), StateMachineStates.disabled);
@@ -117,9 +120,9 @@
         const Action = () => Download(title, `${title}\n\n${content}`);
 
         // 设置页面内全局函数autodownload，调用autodownload时实现自动下载功能
-        unsafeWindow.autodownload = function () {
+        unsafeWindow.autodownload = function (state) {
             // 将状态机设为“寻找第一页”状态
-            GM_setValue(GlobalVar("autodownload"), StateMachineStates.find_first_page);
+            GM_setValue(GlobalVar("autodownload"), StateMachineStates[state || "find_first_page"]);
             // 重载本页使得状态机的新状态得到处理。
             document.location.reload();
         };
@@ -134,8 +137,7 @@
         }
 
         // 自动下载状态，标题栏提示。
-        const page_title = document.title;
-        const interval_handle = setInterval(() => {
+        interval_handle = setInterval(() => {
             const t1 = "[自动下载中] " + page_title;
             const t2 = "[---------] " + page_title;
             document.title = document.title === t2 ? t1 : t2;
@@ -171,13 +173,18 @@
                 // 否则，已下载完最后一页，状态机设为停止。
                 GM_setValue(GlobalVar("autodownload"), StateMachineStates.disabled);
                 clearInterval(interval_handle);
+                document.title = page_title;
                 return;
             }
         }
 
     } catch (e) {
         // 有任何异常，则状态机设为停止
-        GM_setValue(GlobalVar("autodownload"), StateMachineStates.disabled);
         Log(`Error ${e.message}`);
+        GM_setValue(GlobalVar("autodownload"), StateMachineStates.disabled);
+        if (interval_handle !== undefined) {
+            clearInterval(interval_handle);
+        }
+        document.title = page_title;
     }
 })();
