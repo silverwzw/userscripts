@@ -136,9 +136,9 @@
         // 自动下载状态，标题栏提示。
         const page_title = document.title;
         const interval_handle = setInterval(() => {
-            const t1 = "[自动下载中] " + title;
-            const t2 = "[---------] " + title;
-            document.title = document.title == t2 ? t1 : t2;
+            const t1 = "[自动下载中] " + page_title;
+            const t2 = "[---------] " + page_title;
+            document.title = document.title === t2 ? t1 : t2;
         }, 300);
 
         // 如果状态机状态为“寻找第一页”
