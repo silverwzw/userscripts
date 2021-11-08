@@ -34,11 +34,11 @@
     }
     const email = resolve(url.hostname.toLowerCase());
 
-    function log(should_log) {
+    function log(should_log, ...rest) {
         if (!should_log) {
             return;
         }
-        console.log.apply(console, Array.prototype.slice.call(arguments, 1));
+        console.log(...rest);
     }
 
     function resolve(hostname) {
@@ -67,15 +67,23 @@
             return false;
         }
 
-        const { nodeName, type, disabled, readonly, value, minLength, maxLength, pattern } = target;
+        const { nodeName, type, disabled, readOnly, value, minLength, maxLength, pattern } = target;
 
-        if (nodeName !== "INPUT" || !supported_input_types.has(type)) {
-            log(debug, `Invalid target: { nodeName: "${nodeName}", type: "${type}" }.`);
+        switch (nodeName.toUpperCase()) {
+          case "INPUT":
+            if (!supported_input_types.has(type)) {
+                log(debug, `Invalid input type: "${type}" }.`);
+                return false;
+            } break;
+          case "TEXTAREA":
+            break;
+          default:
+            log(debug, `Invalid target node: "${nodeName}".`);
             return false;
         }
 
-        if (disabled || readonly || value === undefined || value === null || value.length !== 0) {
-            log(debug, "Invalid target because readonly or not empty: ", target);
+        if (disabled || readOnly || value === undefined || value === null || value.length !== 0) {
+            log(debug, "Invalid target because readOnly or not empty: ", target);
             return false;
         }
 
