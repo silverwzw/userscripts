@@ -15,7 +15,8 @@
 
     const debug = false;
     const placeholder_delay = 500;
-    const suffix = "@silverwzw.com";
+    // const suffix = "@your_domain.com";
+    // const tag_user = "user_name";
     const supported_input_types = new Set(["text", "email", "url"]);
     const supported_protocols = new Set(["http", "https"]);
     const regional_domains = new Set(["cn", "us", "tw", "hk", "ca", "au", "uk"]);
@@ -23,7 +24,9 @@
     const hardcode_hostnames = [
         {re: /intl\.alipay\.com$/, prefix: "ali.intl"},
         {re: /aliexpress\.com$/, prefix: "ali.intl"},
-        {re: /alipay\.com$/, prefix: "ali"}
+        {re: /alipay\.com$/, prefix: "ali"},
+        {re: /bilibili\.com$/, tag: "bilibili.com"},
+        {re: /retiehe\.com$/, tag: "retiehe.com"},
     ];
 
     const url = new URL(document.URL);
@@ -42,9 +45,15 @@
     }
 
     function resolve(hostname) {
-        for (const {re, email, prefix} of hardcode_hostnames) {
+        for (const {re, email, prefix, tag} of hardcode_hostnames) {
             if (hostname.match(re)) {
-                return email !== undefined ? email : (prefix + suffix);
+                if (email !== undefined) {
+                    return email;
+                } else if (prefix !== undefined) {
+                    return prefix + suffix;
+                } else if (tag !== undefined) {
+                    return `${tag_user}+A.${tag}@gmail.com`;
+                }
             }
         }
 
