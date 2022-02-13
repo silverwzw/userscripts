@@ -24,14 +24,19 @@
     const supported_protocols = new Set(["http", "https"]);
     const regional_domains = new Set(["cn", "us", "tw", "hk", "ca", "au", "uk"]);
     const wellknown_domains = new Set(["com", "gov", "edu", "org"]);
+    const ip_re = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$/;
     const hardcode_hostnames = [
+        {re: ip_re, disable: true},
         {re: /intl\.alipay\.com$/, prefix: "ali.intl"},
         {re: /aliexpress\.com$/, prefix: "ali.intl"},
         {re: /alipay\.com$/, prefix: "ali"},
         {re: /bilibili\.com$/, tag: "bilibili.com"},
         {re: /retiehe\.com$/, tag: "retiehe.com"},
-        {re: /nas\.silverwzw\.com$/, id: "Silverwzw"},
-        {re: /labstack\.com$/, disable: true }
+        {re: /silverwzw\.com$/, disable: true},
+        {re: /labstack\.com$/, disable: true },
+        {re: /papajohns\.com$/, prefix: "papajohns"},
+        {re: /arknights\.global$/, prefix: "yo-star.com"},
+        {re: /cue\.dev/, prefix: "cuehealth.com"}
     ];
 
     const url = new URL(document.URL);
