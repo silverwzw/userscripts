@@ -13,8 +13,25 @@
 (function() {
     'use strict';
 
-    if (!("userscript_debug" in unsafeWindow)) {
-        unsafeWindow.userscript_debug = false;
+    const script_name = "id_through_right_arrow_key";
+    if (!("userscript" in unsafeWindow)) {
+        unsafeWindow.userscript = {};
+    }
+    if (!(script_name in unsafeWindow.userscript)) {
+        unsafeWindow.userscript[script_name] = {
+            debug: false
+        };
+    }
+    const script_config = unsafeWindow.userscript[script_name];
+
+    function log(should_log, ...rest) {
+        if (!should_log) {
+            return;
+        }
+        if (rest.length === 1 && typeof rest[0] === "function") {
+            rest = rest[0]();
+        }
+        console.log(`[userscript.${script_name}] `, ...rest);
     }
 
     const placeholder_delay = 500;
@@ -36,26 +53,20 @@
         {re: /labstack\.com$/, disable: true },
         {re: /papajohns\.com$/, prefix: "papajohns"},
         {re: /arknights\.global$/, prefix: "yo-star.com"},
-        {re: /cue\.dev/, prefix: "cuehealth.com"}
+        {re: /cue\.dev/, prefix: "cuehealth.com"},
+        {re: /aum-inc\.com$/, id: "1051653580"}
     ];
 
     const url = new URL(document.URL);
     if (!supported_protocols.has(url.protocol.slice(0, -1).toLowerCase())) {
         // disable the logic on local html file
-        log(unsafeWindow.userscript_debug, `Disabled due to incorrect protocol ${url.protocol}.`);
+        log(script_config.debug, `Disabled due to incorrect protocol ${url.protocol}.`);
         return;
     }
     const disabled_domain = Symbol("disabled_domain");
     const id = resolve(url.hostname.toLowerCase());
     if (id === disabled_domain) {
         return;
-    }
-
-    function log(should_log, ...rest) {
-        if (!should_log) {
-            return;
-        }
-        console.log(...rest);
     }
 
     function resolve(hostname) {
@@ -68,7 +79,7 @@
                 } else if (tag !== undefined) {
                     return `${tag_user}+A.${tag}@gmail.com`;
                 } else if (disable) {
-                    log(unsafeWindow.userscript_debug, `Disabled due to '${hostname}' is a disabled hostname.`);
+                    log(script_config.debug, `Disabled due to '${hostname}' is a disabled hostname.`);
                     return disabled_domain;
                 }
             }
@@ -133,7 +144,7 @@
         if (event.key !== "ArrowRight") {
             return;
         }
-        if (!isTargetValid(event.target, unsafeWindow.userscript_debug)) {
+        if (!isTargetValid(event.target, script_config.debug)) {
             return;
         }
         event.target.value = id;
