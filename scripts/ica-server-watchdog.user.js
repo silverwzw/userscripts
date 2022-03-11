@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name		BC1 Cluster Watcdog
+// @name	BC1 Cluster Watcdog
 // @namespace	http://silverwzw.com/
-// @version		0.1
+// @version	0.1
 // @description	Give notification when ICA is down
-// @include		*
+// @include	*
 // @copyright	2013+, Silverwzw
-// @require      http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js
+// @require     http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js
 // ==/UserScript==
 
 jQuery.noConflict();
